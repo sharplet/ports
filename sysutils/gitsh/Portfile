@@ -1,0 +1,67 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+github.setup        thoughtbot gitsh 0.14 v
+github.tarball_from releases
+
+maintainers         @sharplet \
+                    openmaintainer
+categories          sysutils
+description         An interactive shell for git
+long_description    The gitsh program is an interactive shell for git. \
+                    From within gitsh you can issue any git command, \
+                    even using your local aliases and configuration.
+platforms           darwin
+supported_archs     noarch
+license             BSD
+
+set gitsh.ruby_bin  ruby3.0
+set gitsh.ruby_port [join [split ${gitsh.ruby_bin} .] {}]
+set gitsh.ruby_dep  bin:bin/${gitsh.ruby_bin}:${gitsh.ruby_port}
+set gitsh.ruby_env  RUBY=${prefix}/bin/${gitsh.ruby_bin}
+
+depends_lib         port:readline \
+                    ${gitsh.ruby_dep}
+
+configure.env       RUBY=${prefix}/bin/${gitsh.ruby_bin}
+
+variant noruby description {Use system Ruby} conflicts ruby27 ruby26 ruby25 ruby24 ruby23 {
+  depends_lib-delete ${gitsh.ruby_dep}
+  configure.env-delete ${gitsh.ruby_env}
+}
+
+variant ruby27 description {Use Ruby 2.7} conflicts noruby ruby26 ruby25 ruby24 ruby23 {
+  depends_lib-delete ${gitsh.ruby_dep}
+  depends_lib-append path:bin/ruby2.7:ruby27
+  configure.env RUBY=${prefix}/bin/ruby2.7
+}
+
+variant ruby26 description {Use Ruby 2.6} conflicts noruby ruby27 ruby25 ruby24 ruby23 {
+  depends_lib-delete ${gitsh.ruby_dep}
+  depends_lib-append path:bin/ruby2.6:ruby26
+  configure.env RUBY=${prefix}/bin/ruby2.6
+}
+
+variant ruby25 description {Use Ruby 2.5} conflicts noruby ruby27 ruby26 ruby24 ruby23 {
+  depends_lib-delete ${gitsh.ruby_dep}
+  depends_lib-append path:bin/ruby2.5:ruby25
+  configure.env RUBY=${prefix}/bin/ruby2.5
+}
+
+variant ruby24 description {Use Ruby 2.4} conflicts noruby ruby27 ruby26 ruby25 ruby23 {
+  depends_lib-delete ${gitsh.ruby_dep}
+  depends_lib-append path:bin/ruby2.4:ruby24
+  configure.env RUBY=${prefix}/bin/ruby2.4
+}
+
+variant ruby23 description {Use Ruby 2.3} conflicts noruby ruby27 ruby26 ruby25 ruby24 {
+  depends_lib-delete ${gitsh.ruby_dep}
+  depends_lib-append path:bin/ruby2.3:ruby23
+  configure.env RUBY=${prefix}/bin/ruby2.3
+}
+
+checksums           rmd160  9fe049bb3fb50dc40bc1179d899da1e99e2ffb24 \
+                    sha256  4b89b6d006326a7b57c4c8e440594e477db61b7d3fe2633a8aad176bb19d0125 \
+                    size    1171693
